@@ -9,6 +9,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -76,7 +77,8 @@ func (s *snapshot) load(ctx context.Context, allowNetwork bool, scopes ...loadSc
 			case "std", "cmd":
 				query = append(query, string(scope))
 			default:
-				modQuery := fmt.Sprintf("%s/...", scope)
+				// modQuery := fmt.Sprintf("%s/...", scope)
+				modQuery := "./"
 				query = append(query, modQuery)
 				moduleQueries[modQuery] = string(scope)
 			}
@@ -123,8 +125,11 @@ func (s *snapshot) load(ctx context.Context, allowNetwork bool, scopes ...loadSc
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Minute)
 	defer cancel()
 
+	fmt.Fprintf(os.Stderr, "Loading packages for %+v\n", query)
+	start := time.Now()
 	cfg := s.config(ctx, inv)
 	pkgs, err := packages.Load(cfg, query...)
+	fmt.Fprintf(os.Stderr, "Loaded %d packages in %s (err: %+v)\n", len(pkgs), time.Since(start), err)
 	cleanup()
 
 	// If the context was canceled, return early. Otherwise, we might be

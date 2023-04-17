@@ -361,12 +361,14 @@ func (s *Server) diagnose(ctx context.Context, snapshot source.Snapshot, analyze
 	// Maybe run go mod tidy (if it has been invalidated).
 	//
 	// Since go mod tidy can be slow, we run it concurrently to diagnostics.
+	/*
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
 		modTidyReports, err := mod.TidyDiagnostics(ctx, snapshot)
 		store(modTidySource, "running go mod tidy", modTidyReports, err, true)
 	}()
+	*/
 
 	// Run type checking and go/analysis diagnosis of packages in parallel.
 	var (

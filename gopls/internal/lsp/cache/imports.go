@@ -109,7 +109,7 @@ func (s *importsState) runProcessEnvFunc(ctx context.Context, snapshot *snapshot
 		return err
 	}
 
-	if s.cacheRefreshTimer == nil {
+	if s.cacheRefreshTimer == nil && false {
 		// Don't refresh more than twice per minute.
 		delay := 30 * time.Second
 		// Don't spend more than a couple percent of the time refreshing.
